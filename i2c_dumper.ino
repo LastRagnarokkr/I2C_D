@@ -28,7 +28,8 @@ void setup() {
 	
 	while (Wire.available()){
 		R = Wire.read();
-		Serial.print(R, BIN); //use Serial.print(value,byte) for ASCII characters
+		Serial.print(R, BYTE); //use Serial.print(value,byte) for ASCII characters
+		//Using Serial.print(val, BYTE) function sends as many bytes as required
 	}
   }
   
