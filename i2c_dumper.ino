@@ -1,35 +1,34 @@
 #include <Wire.h>
 
-#define AT24C256_ADDR 0x50
+#define DEV_ADDR 0x50 //0x50 for when all pins are floating or grounded (with AT24C256)
 
 void setup() {
-  unsigned long Flashsize = 0x8000; 
-  byte r = 0;
-  //512pages * 64bytes = 32 768bytes (0x8000) * 8 = 262 144bits
-  //1024pages*32bytes=0x8000
+  int PAGESIZE = 32; //BUFFER is limited to 32 bytes!
+  int PAGEAMOUNT = 1024;
+  byte R = 0;
   
-  Serial.begin(115200);
+  Serial.begin(9600); //Baud rate is set to 9600
   Wire.begin();
-  Wire.setClock(400000L); //set clock speed at 400 kHz
+  //Wire.setClock(400000L); //set clock speed to 400 kHz
   
   delayMicroseconds(500);
   Serial.println("Set baud to 115200. Clocked for 400kHz.");
   Serial.println("Waiting for input character to start...");
 
-    while (!Serial.available()) {
+    while (!Serial.available()){
     // Loop until a character sent via serial
   }
   
-  Wire.beginTransmission(AT24C256_ADDR);
+  Wire.beginTransmission(DEV_ADDR);
   Wire.write(0x00); //Set the start address for use in the upcoming reads
   Wire.endTransmission();
  
-  for(int i = 0; i < 1024; i++){
-    Wire.requestFrom(AT24C256_ADDR, 32); //read 32 bytes at a time as buffer limit is 32 bytes
+  for(int i = 0; i < PAGEAMOUNT; i++){
+    Wire.requestFrom(DEV_ADDR, PAGESIZE); //read 32 bytes at a time as buffer limit is 32 bytes
 	
 	while (Wire.available()){
-		r = Wire.read();
-		Serial.print(r, BIN); //use Serial.print(value,byte) for ASCII characters
+		R = Wire.read();
+		Serial.print(R, BIN); //use Serial.print(value,byte) for ASCII characters
 	}
   }
   
